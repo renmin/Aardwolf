@@ -12,6 +12,8 @@ var fs = require('fs');
 var config = require('../config/config.defaults.js');
 var util = require('./server-util.js');
 
+var multirewriter = require('../rewriter/multirewriter.js');
+
 function run() {
     /* Server for web service ports and debugger UI */
     http.createServer(AardwolfServer).listen(config.serverPort, null, function() {
@@ -36,8 +38,24 @@ function AardwolfServer(req, res) {
         return;
     }
     else if (req.method == 'POST') {
-        req.on('data', function (chunk) { body += chunk; });
-        req.on('end', function () { processPostedData(JSON.parse(body)); });
+        req.on('data', function (chunk) { 
+            body += chunk; 
+        });
+        req.on('end', function () { 
+            var data;
+            try{
+                data = JSON.parse(body)
+            }
+            catch(ex){
+                ok200({
+                    'error': 'Parsing post data',
+                    'data' : body,
+                    'message' : ex.message
+                });
+                return;
+            }
+            processPostedData(data);                 
+        });
     }
     else {
         processPostedData();
@@ -45,7 +63,7 @@ function AardwolfServer(req, res) {
 
     function processPostedData(data) {
         switch (req.url) {
-            case '/mobile/init':
+            case '/mobile/init':  //移动端发送的初始化信息。
                 mobileDispatcher.end();
                 mobileDispatcher = new Dispatcher();
                 mobileDispatcher.setClient(res);
@@ -53,7 +71,7 @@ function AardwolfServer(req, res) {
                 desktopDispatcher.addMessage(data);
                 break;
 
-            case '/mobile/console':
+            case '/mobile/console':  //将移动端的console消息发给桌面显示
                 desktopDispatcher.addMessage(data);
                 ok200();
                 break;
@@ -63,7 +81,7 @@ function AardwolfServer(req, res) {
                 mobileDispatcher.setClient(res);
                 break;
 
-            case '/mobile/incoming':
+            case '/mobile/incoming': //移动端读消息
                 mobileDispatcher.setClient(res);
                 break;
 
@@ -78,6 +96,19 @@ function AardwolfServer(req, res) {
 
             case '/files/list':
                 ok200({ files: util.getFilesList() });
+                break;
+
+            case '/fiddler/html':   //根据URL解析HTML文件，返回html内容和JS文件列表。               
+                multirewriter.getRewrittenHTMLContent(data,function(result){
+                    ok200(result);
+                });
+                console.log('fiddler/html:'+data.url);
+                break;
+            case '/fiddler/js':   //根据URL获取重写后js内容。               
+                multirewriter.getRewrittenJSContent(data,function(result){
+                    ok200(result);
+                });
+                console.log('fiddler/js:'+data.url);
                 break;
 
             case '/':
@@ -134,6 +165,7 @@ function Dispatcher() {
     var queue = [];
     var client;
 
+    //读取一个消息放，交给c
     this.setClient = function(c) {
         this.end();
         client = c;
