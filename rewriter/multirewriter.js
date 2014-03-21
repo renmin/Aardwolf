@@ -8,6 +8,11 @@ var http = require('http');
 
 var config = require('../config/config.defaults.js');
 
+var debugFiles={
+  fileList=[],
+  fileContent={}
+};
+
 function isRewritable(filePath) {
     var fileServerBaseDir = path.normalize(config.fileServerBaseDir);
     var fullRequestedFilePath = path.join(fileServerBaseDir, filePath);
@@ -153,30 +158,43 @@ function getRewrittenHTMLContent(data,callback){
             console.log(JSON.stringify(errors));
             return;
         }
-        var $ = window.$;
+        try{
+          var $ = window.$;
 
-        var linkScripts = getScripts($,filePath);
+          var linkScripts = getScripts($,filePath);
 
-        $('.jsdom').remove();
+          $('.jsdom').remove();
 
-        //TODO: 添加aardwolf.js节点
-        var jsFilename = addInjectJS();
+          //TODO: 添加weinre 引用文件
+          addWeinreSupport();
 
-        window.document.head.innerHTML = 
-          '<script type="text/javascript" src="'+jsFilename+'"></script>\n'
-          +window.document.head.innerHTML;
-        //TODO: 添加weinre 引用文件
-        addWeinreSupport();
 
-        var result = {
-          'html': window.document.outerHTML,
-          'linkScripts' : linkScripts,
-          'jsFilename' : $URL.resolve(url, jsFilename)
+          //TODO: 添加aardwolf.js节点
+          //调试文件要加在最前面。但可能也有一些问题，测试一下，看看是不是要内嵌JS。
+          var jsFilename = addInjectJS();
+          window.document.head.innerHTML = 
+            '<script type="text/javascript" src="'+jsFilename+'"></script>\n'
+            +window.document.head.innerHTML;
+
+          var result = {
+            'html': window.document.outerHTML,
+            'linkScripts' : linkScripts,
+            'jsFilename' : jsFilename
+          }
+
+          console.log('jsdom got result.');
+          callback(result);
         }
+        catch(ex){
+          var result = {
+            'error': true,
+            'message': ex.message
+          }
 
-        console.log('jsdom got result.');
-        callback(result);
+          console.log('Error occurs in getRewrittenHTMLContent, message:'+ex.message);
 
+          callback(result);          
+        }
 
 
 
@@ -228,11 +246,12 @@ function getRewrittenHTMLContent(data,callback){
         }
         function addInjectJS (argument) {
           // body...
-          var jsFilename = './AlloyMobileDebugClient.js';
-
+          var jsFilename = '__SERVER_URL__/mobile/wedere.js';
+          /*
           if (data.injectFileName) {
             jsFilename = './'+data.injectFileName;
           };
+          */
           return jsFilename
         }
 
@@ -257,8 +276,12 @@ function getRewrittenJSContent(data,callback){
       jsContent='',
       result={};
 
-    if(data.js && data.js.length>0){
-      jsContent = data.js;
+      if(!$.inArray(filePath,debugFiles.fileList)){
+        debugFiles.fileList.push(filePath);
+      }
+
+    if(data.js && data.js.length>0){      
+      debugFiles.fileContent[filePath] = jsContent = data.js;
       result.js = rewriteJS(filePath,jsContent).file;
       callback(result);
     }
@@ -271,6 +294,7 @@ function getRewrittenJSContent(data,callback){
         res.on('data',function(data){
                 console.log("Got data, length: " + data.length);
                 jsContent += data;
+                debugFiles.fileContent[filePath] = jsContent;
                 result.js = rewriteJS(filePath,jsContent).file;
                 callback(result);      
         });

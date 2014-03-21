@@ -24,6 +24,8 @@ function run() {
 var mobileDispatcher = new Dispatcher();
 var desktopDispatcher = new Dispatcher();
 
+var wedere ={};
+
 function AardwolfServer(req, res) {
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -109,6 +111,14 @@ function AardwolfServer(req, res) {
                     ok200(result);
                 });
                 console.log('fiddler/js:'+data.url);
+                break;
+
+            case '/mobile/wedere.js':
+                var fullRequestedFilePath = path.join(__dirname,'../js/wedere.js');
+                    if (fs.existsSync(fullRequestedFilePath) ) {
+                        util.serveStaticFile(res, fullRequestedFilePath);
+                        break;
+                    }
                 break;
 
             case '/':

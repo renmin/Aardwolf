@@ -1,0 +1,7 @@
+﻿{
+	'serverIP':'localhost',
+	'serverPort':8000,
+	'weinreServer':'',
+	'urlWhitelist':[]
+
+}
