@@ -48,7 +48,8 @@ window.Aardwolf = new (function() {
 
             asyncXHR.send(null);
         } catch (ex) {
-            alert('Aardwolf encountered an error while waiting for command: ' + ex.toString());
+            console.log('Aardwolf encountered an error while waiting for command: ' + ex.toString());
+            debugger;
             listenToServer();
         }
     }

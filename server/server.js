@@ -71,6 +71,7 @@ function AardwolfServer(req, res) {
                 mobileDispatcher.setClient(res);
                 desktopDispatcher.clearMessages();
                 desktopDispatcher.addMessage(data);
+                ok200();
                 break;
 
             case '/mobile/console':  //将移动端的console消息发给桌面显示
@@ -97,7 +98,16 @@ function AardwolfServer(req, res) {
                 break;
 
             case '/files/list':
-                ok200({ files: util.getFilesList() });
+                var list = multirewriter.getFileslist();
+                if(list&&list.length>0){
+                    ok200({files:list});
+                }
+                else{
+                    ok200({ files: util.getFilesList() });
+                }
+                break;
+            case '/files/submitlist':
+                ok200(multirewriter.submitList(data));
                 break;
 
             case '/fiddler/html':   //根据URL解析HTML文件，返回html内容和JS文件列表。               
@@ -144,7 +154,15 @@ function AardwolfServer(req, res) {
 
                 /* check if we need to serve a UI file */
                 if (req.url.indexOf('/files/data/') === 0) {
-                    var requestedFile = req.url.substr(12);
+                    var requestedFile = decodeURIComponent(req.url.substr(12));
+                    //先判断MultiWriter中是否有
+                    var content = multirewriter.getFileContent(requestedFile);
+                    if (content) {
+                        ok200(content);
+                        break;
+                    };
+
+
                     var filesDir = path.normalize(config.fileServerBaseDir);
                     var fullRequestedFilePath = path.join(filesDir, requestedFile);
 
@@ -152,7 +170,7 @@ function AardwolfServer(req, res) {
                     if (fs.existsSync(fullRequestedFilePath) && fullRequestedFilePath.indexOf(filesDir) === 0) {
                         ok200({
                             data: fs.readFileSync(fullRequestedFilePath).toString(),
-                            breakpoints: require('../rewriter/multirewriter.js').getRewrittenContent(requestedFile).breakpoints || []
+                            breakpoints: multirewriter.getRewrittenContent(requestedFile).breakpoints || []
                         });
                         break;
                     }

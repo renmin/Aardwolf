@@ -2,16 +2,30 @@
 
 var path = require('path');
 var fs = require('fs');
-var jsdom = require("jsdom");
+var cheerio = require('cheerio');
 var $URL = require('url');
 var http = require('http');
 
 var config = require('../config/config.defaults.js');
 
+//用于存储给调试器界面的可调式文件列表
 var debugFiles={
-  fileList=[],
-  fileContent={}
+  fileList:[],
+  fileContent:{}
 };
+function submitList (data) {
+    console.log('submitList: '+ JSON.stringify(data));
+  debugFiles={
+    fileList:[],
+    fileContent:{}
+  };
+  if(data&&data.fileList){
+    data.fileList.forEach(function (val,key) {
+      debugFiles.fileList.push(val);
+    })
+  }
+}
+
 
 function isRewritable(filePath) {
     var fileServerBaseDir = path.normalize(config.fileServerBaseDir);
@@ -50,98 +64,10 @@ function getRewrittenContent(filePath) {
 
 }
 
-function getRewrittenHTMLContent2(url,callback){
-
-
-    url = url.toLowerCase();
-
-
-    var done = false, result;
-
-    jsdom.env(
-      url,
-      ["http://code.jquery.com/jquery.js"],
-      function (errors, window) {
-
-        if(errors){
-            console.log(JSON.stringify(errors));
-            return;
-        }
-        var $ = window.$;
-
-        var linkScripts = getScripts($,url);
-
-        $('.jsdom').remove();
-
-        var result = {
-          'html': window.document.outerHTML,
-          'linkScripts' : linkScripts
-        }
-
-        console.log('jsdom got result.');
-        callback(result);
-
-      }
-    );
-
-
-    function getScripts($,filePath){
-      var linkScripts=[];
-
-            $('script').each(function (index) {
-                var s = $(this),
-                    content;
-
-                if(this.getAttribute('class')==='jsdom'){return};
-                
-                if(this.src && this.src.length>0){
-
-                  var jsSrc = this.src;
-
-                  //translate to absolute url
-                  if(jsSrc.indexOf('.')==0 || jsSrc.indexOf('/')==0){
-                    if(url.indexOf('http')==0){
-                      jsSrc = $URL.resolve(url,jsSrc);
-                    }
-                  }
-
-                  if (fs.existsSync(jsSrc) &&
-                        fs.statSync(jsSrc).isFile()){
-                    /* 本地文件不经过fiddler，忽略
-                    content = fs.readFileSync(this.src).toString();
-                    linkScripts[this.src] = rewriteJS(content);
-                    */
-                    return
-                  }
-                  else{
-                    //console.log(this.src);
-                    linkScripts.push(jsSrc);
-                  }
-                }
-                else if (this.text && this.text.length>0){
-                    content = this.text;
-                    this.text = rewriteJS(content,filePath+'-js-'+index);
-                }
-                else{
-                    console.log('Warning: invalid script tag '+this.outerHTML);
-                }
-
-            });
-
-      return linkScripts;
-
-    }
-    function rewriteJS(content){
-      content='console.log("rewrited");'+content;
-      return content;
-    }
-
-
-}//end of getRewrittenHTMLContent2
-
 
 function getRewrittenHTMLContent(data,callback){
 
+    if(!data|| !data.url){return};
 
     var url = data.url.toLowerCase(),
       objUrl = $URL.parse(url),
@@ -149,122 +75,127 @@ function getRewrittenHTMLContent(data,callback){
 
     var done = false, result;
 
-    jsdom.env(
-      data.html? data.html: url,
-      ["http://cache.soso.com/wenwen/js/jquery-1.6.2.min.js"],
-      function (errors, window) {
+    if(data.html)
+    {
+        doRewrite(data.html);
+    }
+    else{
+        var html='';
+      http.get(url, function(res) {
+        console.log("Got response: " + res.statusCode);
+        res.on('data',function(data){
+                console.log("Got data, length: " + data.length);
+                html += data;
+                doRewrite(html);      
+        });
+      }).on('error', function(e) {
+        console.log("Got error: " + e.message);
+        result.error=true;
+        result.message = e.message;
+        callback(result);
+      });
 
-        if(errors){
-            console.log(JSON.stringify(errors));
-            return;
-        }
+    }
+
+    function doRewrite(html){
         try{
-          var $ = window.$;
+            var $ = cheerio.load(html);
 
-          var linkScripts = getScripts($,filePath);
+            var linkScripts = getScripts($,url);
 
-          $('.jsdom').remove();
+            $('.jsdom').remove();
 
-          //TODO: 添加weinre 引用文件
-          addWeinreSupport();
+            //TODO: 添加weinre 引用文件
+            addWeinreSupport();
 
 
-          //TODO: 添加aardwolf.js节点
-          //调试文件要加在最前面。但可能也有一些问题，测试一下，看看是不是要内嵌JS。
-          var jsFilename = addInjectJS();
-          window.document.head.innerHTML = 
-            '<script type="text/javascript" src="'+jsFilename+'"></script>\n'
-            +window.document.head.innerHTML;
+            //TODO: 添加aardwolf.js节点
+            //调试文件要加在最前面。但可能也有一些问题，测试一下，看看是不是要内嵌JS。
+            var jsFilename = addInjectJS();
+            var myhead = $('head').html()
+            $('head').html(
+                '<script type="text/javascript" src="'+jsFilename+'"></script>\n'
+                +myhead
+              );
 
-          var result = {
-            'html': window.document.outerHTML,
+            var result = {
+            'html': $.html(),
             'linkScripts' : linkScripts,
             'jsFilename' : jsFilename
-          }
+            }
 
-          console.log('jsdom got result.');
-          callback(result);
+            console.log('jsdom got result.');
+            callback(result);
         }
         catch(ex){
-          var result = {
+            var result = {
             'error': true,
             'message': ex.message
-          }
+            }
 
-          console.log('Error occurs in getRewrittenHTMLContent, message:'+ex.message);
+            console.log('Error occurs in getRewrittenHTMLContent, message:'+ex.message);
 
-          callback(result);          
+            callback(result);          
         }
+    }
+    function getScripts($,filePath){
+        var linkScripts=[];
+
+        $('script').each(function (index) {
+            var jsTag = this,
+                content;
+                
+
+            var jsSrc = jsTag.attr('src');
+
+            if(jsSrc && jsSrc.length>0){
 
 
-
-        function getScripts($,filePath){
-          var linkScripts=[];
-
-                $('script').each(function (index) {
-                    var jsTag = this,
-                        content;
-
-                    if(jsTag.getAttribute('class')==='jsdom'){return};
-                    
-                    if(jsTag.src && jsTag.src.length>0){
-
-                      var jsSrc = jsTag.src;
-
-                      //translate to absolute url
-                      if(jsSrc.indexOf('.')==0 || jsSrc.indexOf('/')==0){
-                        if(url.indexOf('http')==0){
-                          jsSrc = $URL.resolve(url,jsSrc);
-                        }
-                      }
-
-                      if (fs.existsSync(jsSrc) &&
-                            fs.statSync(jsSrc).isFile()){
-                        /* 本地文件不经过fiddler，忽略
-                        content = fs.readFileSync(this.src).toString();
-                        linkScripts[this.src] = rewriteJS(content);
-                        */
-                        return
-                      }
-                      else{
-                        //console.log(this.src);
-                        linkScripts.push(jsSrc);
-                      }
+                //translate to absolute url
+                if(jsSrc.indexOf('.')==0 || jsSrc.indexOf('/')==0){
+                    if(url.indexOf('http')==0){        //这里主要为了防止file://的情况出现
+                        jsSrc = $URL.resolve(url,jsSrc);
                     }
-                    else if (jsTag.text && jsTag.text.length>0){
-                        content = jsTag.text;
-                        jsTag.text = rewriteJS(filePath+'-js-'+index,content).file;
-                    }
-                    else{
-                        console.log('Warning: invalid script tag '+jsTag.outerHTML);
-                    }
+                }
 
-                });
+                if (fs.existsSync(jsSrc) &&
+                        fs.statSync(jsSrc).isFile()){
+                    /* 本地文件不经过fiddler，忽略
+                    */
+                    return
+                }
+                else{
+                    //console.log(this.src);
+                    linkScripts.push(jsSrc);
+                }
+            }
+            else {
+                content = jsTag.html();
+                if (content && content.length>0){
+                    jsTag.html(rewriteJS(filePath+'-js-'+index,content).file);
+                }
+                else{
+                    console.log('Warning: invalid script tag '+jsTag.outerHTML);
+                }
+            }
+        });
+        return linkScripts;
+    }
 
-          return linkScripts;
+    function addInjectJS (argument) {
+        // body...
+        var jsFilename = '__SERVER_URL__/mobile/wedere.js';
+        return jsFilename
+    }
 
-        }
-        function addInjectJS (argument) {
-          // body...
-          var jsFilename = '__SERVER_URL__/mobile/wedere.js';
-          /*
-          if (data.injectFileName) {
-            jsFilename = './'+data.injectFileName;
-          };
-          */
-          return jsFilename
-        }
+    function addWeinreSupport (argument) {
+        // body...
+    }
+    function addJs(file){ 
+        var head = $('head');
+        $("<scri"+"pt>"+"</scr"+"ipt>").attr({src:file,type:'text/javascript',id:'debug'}).appendTo(head);
+    }
 
-        function addWeinreSupport (argument) {
-          // body...
-        }
-        function addJs(file){ 
-          var head = $('head');
-          $("<scri"+"pt>"+"</scr"+"ipt>").attr({src:file,type:'text/javascript',id:'debug'}).appendTo(head);
-        }
-
-      }
-    );    
 }//end of getRewrittenHTMLContent
 
 
@@ -276,13 +207,10 @@ function getRewrittenJSContent(data,callback){
       jsContent='',
       result={};
 
-      if(!$.inArray(filePath,debugFiles.fileList)){
-        debugFiles.fileList.push(filePath);
-      }
 
     if(data.js && data.js.length>0){      
-      debugFiles.fileContent[filePath] = jsContent = data.js;
-      result.js = rewriteJS(filePath,jsContent).file;
+      debugFiles.fileContent[url] = jsContent = data.js;
+      result.js = rewriteJS(url,jsContent).file;
       callback(result);
     }
     else{
@@ -294,8 +222,8 @@ function getRewrittenJSContent(data,callback){
         res.on('data',function(data){
                 console.log("Got data, length: " + data.length);
                 jsContent += data;
-                debugFiles.fileContent[filePath] = jsContent;
-                result.js = rewriteJS(filePath,jsContent).file;
+                debugFiles.fileContent[url] = jsContent;
+                result.js = rewriteJS(url,jsContent).file;
                 callback(result);      
         });
       }).on('error', function(e) {
@@ -311,10 +239,30 @@ function getRewrittenJSContent(data,callback){
 }//end of getRewrittenJSContent
 
 function rewriteJS(filePath,jsContent){
+
+      //js文件保存应该用绝对路径
+      var notInList = true;
+      debugFiles.fileList.forEach(function(val,key){
+          if(val == filePath){
+              notInList=false;
+          }
+      });
+
+      if(notInList){
+        debugFiles.fileList.push(filePath);
+      }
+
+
   var rewriter,content;
   rewriter = require('../rewriter/jsrewriter.js');
   if (rewriter) {
       content = rewriter.addDebugStatements(filePath, jsContent);
+      if(debugFiles&&debugFiles.fileContent){
+        debugFiles.fileContent[filePath]={
+                            data: jsContent, //保存原始js给调试器用。
+                            breakpoints: content.breakpoints //可以加断点的行号
+                        };
+      }
   }
   return content
 }
@@ -323,6 +271,21 @@ module.exports = {
     getRewrittenContent: getRewrittenContent,
     isRewritable: isRewritable,
     getRewrittenHTMLContent : getRewrittenHTMLContent,
-    getRewrittenJSContent : getRewrittenJSContent
+    getRewrittenJSContent : getRewrittenJSContent,
+    submitList: submitList,
+    getFileslist : function () {
+      if(debugFiles&&debugFiles.fileList){
+        return debugFiles.fileList;
+      }
+      else{
+        return [];
+      }
+    },
+    getFileContent: function (filePath) {
+        if (debugFiles&&debugFiles.fileContent) {
+            return debugFiles.fileContent[filePath];
+        };
+        return null;
+    }
 };
 

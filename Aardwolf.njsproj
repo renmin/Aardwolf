@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{ab075789-136b-4162-b2f4-3dffbd20c396}</ProjectGuid>
+    <ProjectHome />
+    <ProjectView>ShowAllFiles</ProjectView>
+    <StartupFile>app.js</StartupFile>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <ItemGroup>
+    <Content Include="package.json" />
+    <Content Include="README.md" />
+    <Compile Include="app.js" />
+    <Compile Include="config\config.defaults.js" />
+    <Compile Include="js\aardwolf.js" />
+    <Compile Include="js\wedere.js" />
+    <Compile Include="rewriter\coffeerewriter.js" />
+    <Compile Include="rewriter\jsrewriter.js" />
+    <Compile Include="rewriter\jstokenizer.js" />
+    <Compile Include="rewriter\multirewriter.js" />
+    <Content Include="samples\calc-coffee.html" />
+    <Content Include="samples\calc.html" />
+    <Compile Include="samples\calc.js" />
+    <Compile Include="server\debug-file-server.js" />
+    <Compile Include="server\rewriter-server.js" />
+    <Compile Include="server\server-util.js" />
+    <Compile Include="server\server.js" />
+    <Content Include="ui\index.html" />
+    <Content Include="FiddlerAddon\FiddlerAddon\DebuggerConsole\config.json" />
+    <Content Include="FiddlerAddon\FiddlerAddon\bin\Debug\DebuggerConsole\config.json" />
+    <Content Include="FiddlerAddon\FiddlerAddon\obj\Debug\FiddlerAddon.csproj.FileListAbsolute.txt" />
+    <Compile Include="rewriter\templates\debug-template.js" />
+    <Compile Include="rewriter\templates\exception-template.js" />
+    <Content Include="ui\css\buttons.css" />
+    <Content Include="ui\css\ui.css" />
+    <Content Include="ui\img\breakpoint-arrow.png" />
+    <Content Include="ui\img\breakpoint-bg.png" />
+    <Content Include="ui\img\code-bg.png" />
+    <Compile Include="ui\js\coffeetokenizer.js" />
+    <Compile Include="ui\js\jstokenizer.js" />
+    <Compile Include="ui\js\ui.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="config" />
+    <Folder Include="FiddlerAddon\" />
+    <Folder Include="FiddlerAddon\FiddlerAddon\" />
+    <Folder Include="FiddlerAddon\FiddlerAddon\bin\" />
+    <Folder Include="FiddlerAddon\FiddlerAddon\bin\Debug\" />
+    <Folder Include="FiddlerAddon\FiddlerAddon\bin\Debug\DebuggerConsole" />
+    <Folder Include="FiddlerAddon\FiddlerAddon\DebuggerConsole" />
+    <Folder Include="FiddlerAddon\FiddlerAddon\obj\" />
+    <Folder Include="FiddlerAddon\FiddlerAddon\obj\Debug" />
+    <Folder Include="js" />
+    <Folder Include="rewriter" />
+    <Folder Include="rewriter\templates" />
+    <Folder Include="samples" />
+    <Folder Include="server" />
+    <Folder Include="ui" />
+    <Folder Include="ui\css" />
+    <Folder Include="ui\img" />
+    <Folder Include="ui\js" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:48022/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost:1337</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
