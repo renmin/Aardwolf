@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using Fiddler;
 using Timeline;
 using AlloyTeam.MobileWeb.Properties;
+using System.Diagnostics;
 
 [assembly: Fiddler.RequiredVersion("2.3.5.0")]
 
@@ -36,14 +37,22 @@ public class DebuggerConsole : IAutoTamper    // Ensure class is public, or Fidd
         oPage.Controls.Add(debuggerController.View);
         debuggerController.View.Dock = DockStyle.Fill;
         FiddlerApplication.UI.tabsViews.TabPages.Add(oPage);
+        
     }
     public void OnBeforeUnload() { }
 
     public void AutoTamperRequestBefore(Session oSession)
     {
         //oSession.oRequest["User-Agent"] = sUserAgent;
+        //Disable Caching
+        oSession.oRequest.headers.Remove("If-None-Match");
+        oSession.oRequest.headers.Remove("If-Modified-Since");
+        oSession.oRequest["Pragma"] = "no-cache";
     }
-    public void AutoTamperRequestAfter(Session oSession) { }
+    public void AutoTamperRequestAfter(Session oSession) {
+        Console.WriteLine(oSession.oRequest.headers);
+
+    }
     public void AutoTamperResponseBefore(Session oSession) {
         this.debuggerController.DoRewrite(oSession);
     }

@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiddlerAddon", "FiddlerAddon\FiddlerAddon.csproj", "{64448A0D-32E8-41B3-A9C4-CE022E75EE44}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestPages", "TestPages\TestPages.csproj", "{FB90F44E-66A9-4407-B317-A782238978B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{64448A0D-32E8-41B3-A9C4-CE022E75EE44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64448A0D-32E8-41B3-A9C4-CE022E75EE44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64448A0D-32E8-41B3-A9C4-CE022E75EE44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB90F44E-66A9-4407-B317-A782238978B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB90F44E-66A9-4407-B317-A782238978B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB90F44E-66A9-4407-B317-A782238978B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB90F44E-66A9-4407-B317-A782238978B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
