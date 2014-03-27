@@ -15,3 +15,4 @@ E:\projects\wedere\Aardwolf\FiddlerAddon\FiddlerAddon\obj\Debug\AlloyTeam.Mobile
 E:\projects\wedere\Aardwolf\FiddlerAddon\FiddlerAddon\obj\Debug\FiddlerAddon.csproj.GenerateResource.Cache
 E:\projects\wedere\Aardwolf\FiddlerAddon\FiddlerAddon\obj\Debug\FiddlerAddon.dll
 E:\projects\wedere\Aardwolf\FiddlerAddon\FiddlerAddon\obj\Debug\FiddlerAddon.pdb
+E:\projects\wedere\Aardwolf\FiddlerAddon\FiddlerAddon\obj\Debug\AlloyTeam.MobileWeb.Properties.Resources.resources

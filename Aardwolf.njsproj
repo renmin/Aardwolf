@@ -47,6 +47,7 @@
     <Compile Include="ui\js\coffeetokenizer.js" />
     <Compile Include="ui\js\jstokenizer.js" />
     <Compile Include="ui\js\ui.js" />
+    <Content Include="ui\inject\style.css" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="config" />
@@ -66,6 +67,7 @@
     <Folder Include="ui" />
     <Folder Include="ui\css" />
     <Folder Include="ui\img" />
+    <Folder Include="ui\inject\" />
     <Folder Include="ui\js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />

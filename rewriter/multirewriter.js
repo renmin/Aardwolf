@@ -90,6 +90,7 @@ function getRewrittenHTMLContent(data,callback){
         });
       }).on('error', function(e) {
         console.log("Got error: " + e.message);
+        var result={};
         result.error=true;
         result.message = e.message;
         callback(result);
