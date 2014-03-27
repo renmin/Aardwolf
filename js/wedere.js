@@ -166,20 +166,26 @@ window.Aardwolf = new (function() {
 		sendEvalResult(evalResult, cmd.data);
     }
 	function sendEvalResult(result, input) {
-		if (result instanceof Object) {
-			result = JSON.stringify(result, function(k, v) {
-				if (typeof v == "function") {
-					return "[function]";
-				}
-				return v;
-			});
-		}
+        try{
+		    if (result instanceof Object) {
+			    result = JSON.stringify(result, function(k, v) {
+				    if (typeof v == "function") {
+					    return "[function]";
+				    }
+				    return v;
+			    });
+		    }
+        }
+        catch(ex)
+        {
 
+        }
 		sendToServer('/console', {
 			command: 'print-eval-result',
 			input: input,
 			result: result
 		});
+
 	}
 
     function getStack() {
