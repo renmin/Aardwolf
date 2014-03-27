@@ -8,6 +8,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Diagnostics;
 using Fiddler;
+using System.Xml.Serialization;
 
 namespace AlloyTeam.MobileWeb
 {
@@ -161,6 +162,7 @@ namespace AlloyTeam.MobileWeb
 						{
 							oSession.responseBodyBytes = oEnc.GetBytes(body);
 							oSession.oResponse.headers["Content-Length"] = oSession.responseBodyBytes.LongLength.ToString();
+                            oSession["ui-backcolor"] = "LightBlue";
 						}
 					}
 					return;
@@ -186,7 +188,8 @@ namespace AlloyTeam.MobileWeb
 						{
 							oSession.responseBodyBytes = oEnc.GetBytes(js);
 							oSession.oResponse.headers["Content-Length"] = oSession.responseBodyBytes.LongLength.ToString();
-						}
+                            oSession["ui-backcolor"] = "LightBlue";
+                        }
 					}
 					return;
 
@@ -200,6 +203,7 @@ namespace AlloyTeam.MobileWeb
 				oBody = oBody.Replace(__SERVER_URL__, this.serverURL);
 				oSession.responseBodyBytes = oEnc.GetBytes(oBody);
 				oSession.oResponse.headers["Content-Length"] = oSession.responseBodyBytes.LongLength.ToString();
+                oSession["ui-backcolor"] = "LightBlue";
 
 			}
 			
@@ -270,5 +274,32 @@ namespace AlloyTeam.MobileWeb
 			PostJSONToServer(data, submitListCgi);
 		}
 
-	}
+
+		internal void OpenProject(string filename)
+		{
+            XmlSerializer ser = new XmlSerializer(typeof(DebugProjectModule));
+            DebugProjectModule pro = ser.Deserialize(File.OpenRead(filename)) as DebugProjectModule;
+            if (pro == null)
+            {
+                MessageBox.Show("文件读取失败！");
+            }
+            else
+            {
+                this.CurrentProject = pro;
+                this.View.ShowProjectFiles(this.CurrentProject);
+            }
+		}
+
+		internal void SaveCurrentProject(string p)
+		{			
+			XmlSerializer ser = new XmlSerializer(typeof(DebugProjectModule));
+			ser.Serialize(File.Create(p), this.CurrentProject);
+		}
+
+        internal void CreateProject()
+        {
+            this.CurrentProject = new DebugProjectModule();
+            this.View.ShowProjectFiles(this.CurrentProject);
+        }
+    }
 }

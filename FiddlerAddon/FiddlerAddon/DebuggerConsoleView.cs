@@ -124,5 +124,32 @@ namespace AlloyTeam.MobileWeb
                 this.errorProvider1.SetError(this.txtServerURL, "URL格式错误。");
             }
         }
+
+        private void toolStripLabel1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnNew_Click(object sender, EventArgs e)
+        {
+            this.Controller.CreateProject();
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            if (this.saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                this.Controller.SaveCurrentProject(this.saveFileDialog1.FileName);
+            }
+        }
+
+        private void btnOpen_Click(object sender, EventArgs e)
+        {
+            if (this.openFileDialog1.ShowDialog()== DialogResult.OK)
+            {
+                this.Controller.OpenProject(this.openFileDialog1.FileName);                
+            }
+
+        }
     }
 }

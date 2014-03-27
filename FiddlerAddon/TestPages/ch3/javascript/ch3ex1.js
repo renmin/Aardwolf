@@ -46,7 +46,7 @@ function canvasApp() {
 
         //Text
 
-        context.font = "50px serif"
+        context.font = "50px serif";
 
         var metrics = context.measureText(message);
         var textWidth = metrics.width;
