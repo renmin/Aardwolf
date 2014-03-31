@@ -3,6 +3,7 @@
 var path = require('path');
 var fs = require('fs');
 var cheerio = require('cheerio');
+var beautify = require('js-beautify').js_beautify;
 var $URL = require('url');
 var http = require('http');
 
@@ -104,8 +105,6 @@ function getRewrittenHTMLContent(data,callback){
 
             var linkScripts = getScripts($,url);
 
-            $('.jsdom').remove();
-
             //TODO: 添加weinre 引用文件
             addWeinreSupport();
 
@@ -150,7 +149,6 @@ function getRewrittenHTMLContent(data,callback){
             var jsSrc = jsTag.attr('src');
 
             if(jsSrc && jsSrc.length>0){
-
 
                 //translate to absolute url
                 if(jsSrc.indexOf('.')==0 || jsSrc.indexOf('/')==0){
@@ -223,7 +221,8 @@ function getRewrittenJSContent(data,callback){
         res.on('data',function(data){
                 console.log("Got data, length: " + data.length);
                 jsContent += data;
-                debugFiles.fileContent[url] = jsContent;
+                //jsContent = beautify(data, { indent_size: 2 });
+                //debugFiles.fileContent[url] = jsContent;
                 result.js = rewriteJS(url,jsContent).file;
                 callback(result);      
         });
@@ -257,6 +256,7 @@ function rewriteJS(filePath,jsContent){
   var rewriter,content;
   rewriter = require('../rewriter/jsrewriter.js');
   if (rewriter) {
+      jsContent = beautify(jsContent, { indent_size: 2 });
       content = rewriter.addDebugStatements(filePath, jsContent);
       if(debugFiles&&debugFiles.fileContent){
         debugFiles.fileContent[filePath]={

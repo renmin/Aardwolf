@@ -111,7 +111,7 @@ function addDebugStatements(filePath, text) {
 
             /* we have just entered a function body - insert the first part of the exception interception block */
             if (nestingDepth.length > 1 && nestingDepth[nestingDepth.length-1] === 1) {
-                out.push(buildExceptionInterceptorStart(wordAfterFunction || '<anonymous>', filePath, line));
+                out.push(buildExceptionInterceptorStart(wordAfterFunction || '--anonymous--', filePath, line));
             }
 
 			if (openSwitch) {
@@ -159,7 +159,7 @@ function addDebugStatements(filePath, text) {
 
 
 	return {
-		file: buildExceptionInterceptorStart('<toplevel>', filePath, 0) + out.join('') + exceptionInterceptorEnd,
+		file: buildExceptionInterceptorStart('--toplevel--', filePath, 0) + out.join('') + exceptionInterceptorEnd,
 		breakpoints: breakpoints
 	};
 }

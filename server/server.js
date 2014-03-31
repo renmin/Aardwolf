@@ -8,6 +8,7 @@
 var http = require('http');
 var path = require('path');
 var fs = require('fs');
+var tmpcode = require('./../tmpcode');
 
 var config = require('../config/config.defaults.js');
 var util = require('./server-util.js');
@@ -175,7 +176,14 @@ function AardwolfServer(req, res) {
                         break;
                     }
                 }
-
+                /* check if we need to serve a UI file */
+                if (req.url.indexOf('/test/') === 0) {
+                    var func = req.url.substr(6);
+                    if(tmpcode&&tmpcode[func]){
+                        ok200html(tmpcode[func]());
+                        }
+                    break;
+                }
                 /* fallback... */
                 res.writeHead(404, {'Content-Type': 'text/plain'});
                 res.end('NOT FOUND');
@@ -185,6 +193,10 @@ function AardwolfServer(req, res) {
     function ok200(data) {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(data || {}));
+    }
+    function ok200html(text) {
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(text);
     }
 }
 

@@ -5,13 +5,19 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{ab075789-136b-4162-b2f4-3dffbd20c396}</ProjectGuid>
     <ProjectHome />
-    <ProjectView>ShowAllFiles</ProjectView>
+    <ProjectView>ProjectFiles</ProjectView>
     <StartupFile>app.js</StartupFile>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <NodeExePath />
+    <NodeExeArguments />
+    <ScriptArguments />
+    <NodejsPort />
+    <StartWebBrowser>True</StartWebBrowser>
+    <LaunchUrl>http://localhost:8000/ui/index.html</LaunchUrl>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
@@ -34,9 +40,6 @@
     <Compile Include="server\server-util.js" />
     <Compile Include="server\server.js" />
     <Content Include="ui\index.html" />
-    <Content Include="FiddlerAddon\FiddlerAddon\DebuggerConsole\config.json" />
-    <Content Include="FiddlerAddon\FiddlerAddon\bin\Debug\DebuggerConsole\config.json" />
-    <Content Include="FiddlerAddon\FiddlerAddon\obj\Debug\FiddlerAddon.csproj.FileListAbsolute.txt" />
     <Compile Include="rewriter\templates\debug-template.js" />
     <Compile Include="rewriter\templates\exception-template.js" />
     <Content Include="ui\css\buttons.css" />
@@ -44,6 +47,7 @@
     <Content Include="ui\img\breakpoint-arrow.png" />
     <Content Include="ui\img\breakpoint-bg.png" />
     <Content Include="ui\img\code-bg.png" />
+    <Compile Include="tmpcode.js" />
     <Compile Include="ui\js\coffeetokenizer.js" />
     <Compile Include="ui\js\jstokenizer.js" />
     <Compile Include="ui\js\ui.js" />
@@ -51,14 +55,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="config" />
-    <Folder Include="FiddlerAddon\" />
-    <Folder Include="FiddlerAddon\FiddlerAddon\" />
-    <Folder Include="FiddlerAddon\FiddlerAddon\bin\" />
-    <Folder Include="FiddlerAddon\FiddlerAddon\bin\Debug\" />
-    <Folder Include="FiddlerAddon\FiddlerAddon\bin\Debug\DebuggerConsole" />
-    <Folder Include="FiddlerAddon\FiddlerAddon\DebuggerConsole" />
-    <Folder Include="FiddlerAddon\FiddlerAddon\obj\" />
-    <Folder Include="FiddlerAddon\FiddlerAddon\obj\Debug" />
     <Folder Include="js" />
     <Folder Include="rewriter" />
     <Folder Include="rewriter\templates" />
