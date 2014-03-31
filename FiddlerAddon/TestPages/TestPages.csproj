@@ -57,6 +57,9 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ch3\javascript\ch3ex1.min.js.map">
+      <DependentUpon>ch3ex1.min.js</DependentUpon>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -70,6 +73,9 @@
     <Content Include="ch3\CH3EX3.html" />
     <Content Include="ch3\Debugger.js" />
     <Content Include="ch3\javascript\ch3ex1.js" />
+    <Content Include="ch3\javascript\ch3ex1.min.js">
+      <DependentUpon>ch3ex1.js</DependentUpon>
+    </Content>
     <Content Include="ch3\jscolor\arrow.gif" />
     <Content Include="ch3\jscolor\cross.gif" />
     <Content Include="ch3\jscolor\demo.html" />

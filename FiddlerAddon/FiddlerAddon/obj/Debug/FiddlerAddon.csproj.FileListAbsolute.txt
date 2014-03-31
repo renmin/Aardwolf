@@ -16,3 +16,15 @@ E:\projects\wedere\Aardwolf\FiddlerAddon\FiddlerAddon\obj\Debug\FiddlerAddon.csp
 E:\projects\wedere\Aardwolf\FiddlerAddon\FiddlerAddon\obj\Debug\FiddlerAddon.dll
 E:\projects\wedere\Aardwolf\FiddlerAddon\FiddlerAddon\obj\Debug\FiddlerAddon.pdb
 E:\projects\wedere\Aardwolf\FiddlerAddon\FiddlerAddon\obj\Debug\AlloyTeam.MobileWeb.Properties.Resources.resources
+E:\Projects\Aardwolf\Aardwolf\FiddlerAddon\FiddlerAddon\bin\Debug\DebuggerConsole\config.json
+E:\Projects\Aardwolf\Aardwolf\FiddlerAddon\FiddlerAddon\bin\Debug\FiddlerAddon.dll.config
+E:\Projects\Aardwolf\Aardwolf\FiddlerAddon\FiddlerAddon\bin\Debug\FiddlerAddon.dll
+E:\Projects\Aardwolf\Aardwolf\FiddlerAddon\FiddlerAddon\bin\Debug\FiddlerAddon.pdb
+E:\Projects\Aardwolf\Aardwolf\FiddlerAddon\FiddlerAddon\bin\Debug\LinqBridge.dll
+E:\Projects\Aardwolf\Aardwolf\FiddlerAddon\FiddlerAddon\bin\Debug\Newtonsoft.Json.Net20.dll
+E:\Projects\Aardwolf\Aardwolf\FiddlerAddon\FiddlerAddon\obj\Debug\FiddlerAddon.csprojResolveAssemblyReference.cache
+E:\Projects\Aardwolf\Aardwolf\FiddlerAddon\FiddlerAddon\obj\Debug\AlloyTeam.MobileWeb.DebuggerConsoleView.resources
+E:\Projects\Aardwolf\Aardwolf\FiddlerAddon\FiddlerAddon\obj\Debug\AlloyTeam.MobileWeb.Properties.Resources.resources
+E:\Projects\Aardwolf\Aardwolf\FiddlerAddon\FiddlerAddon\obj\Debug\FiddlerAddon.csproj.GenerateResource.Cache
+E:\Projects\Aardwolf\Aardwolf\FiddlerAddon\FiddlerAddon\obj\Debug\FiddlerAddon.dll
+E:\Projects\Aardwolf\Aardwolf\FiddlerAddon\FiddlerAddon\obj\Debug\FiddlerAddon.pdb
