@@ -265,9 +265,17 @@ function rewriteJS(filePath,jsContent){
                         };
       }
   }
+  logDebugfile();
   return content
 }
-
+function logDebugfile(){
+    if(debugFiles&&debugFiles.fileContent){
+        console.log('LOG: Debug files content includs:');
+        for(var key in debugFiles.fileContent){
+            console.log('\t'+key+', length:'+debugFiles.fileContent[key].data.length);
+       }
+    }
+}
 module.exports = {
     getRewrittenContent: getRewrittenContent,
     isRewritable: isRewritable,
