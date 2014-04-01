@@ -135,6 +135,30 @@ namespace AlloyTeam.MobileWeb
 			}
 			
 		}
+        public void AddjsUrlToCurrentProject(string[] jsurl)
+        {
+            foreach (var item in jsurl)
+            {
+                try
+                {
+                    Uri uri = new Uri(item);
+                    string url = uri.AbsoluteUri;
+                    if (uri.Query.Length > 0)
+                    {
+                        url = url.Substring(0, url.IndexOf(uri.Query));
+                    }
+                    this.CurrentProject.JSFileURLs.Add(url);
+
+                }
+                catch (Exception ex)
+                {
+                    
+                    Debug.WriteLine("[ERROR] in AddjsUrlToCurrentProject, Message:"+ ex.Message);
+                }
+                this.View.ShowProjectFiles(this.CurrentProject);
+
+            }
+        }
 
 		public void DoRewrite(Session oSession)
 		{
