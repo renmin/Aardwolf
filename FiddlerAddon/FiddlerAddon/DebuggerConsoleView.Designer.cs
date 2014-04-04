@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DebuggerConsoleView));
             this.txtPageUrl = new System.Windows.Forms.TextBox();
-            this.btnPrepare = new System.Windows.Forms.Button();
+            this.btnAdd = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,6 +46,7 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.btnSubmit = new System.Windows.Forms.ToolStripButton();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.toolStrip1.SuspendLayout();
@@ -60,15 +61,15 @@
             this.txtPageUrl.Size = new System.Drawing.Size(331, 21);
             this.txtPageUrl.TabIndex = 0;
             // 
-            // btnPrepare
+            // btnAdd
             // 
-            this.btnPrepare.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnPrepare.Location = new System.Drawing.Point(476, 70);
-            this.btnPrepare.Name = "btnPrepare";
-            this.btnPrepare.Size = new System.Drawing.Size(75, 23);
-            this.btnPrepare.TabIndex = 1;
-            this.btnPrepare.Text = "准备";
-            this.btnPrepare.UseVisualStyleBackColor = true;
+            this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAdd.Location = new System.Drawing.Point(476, 70);
+            this.btnAdd.Name = "btnAdd";
+            this.btnAdd.Size = new System.Drawing.Size(75, 23);
+            this.btnAdd.TabIndex = 1;
+            this.btnAdd.Text = "添加";
+            this.btnAdd.UseVisualStyleBackColor = true;
             // 
             // label1
             // 
@@ -141,7 +142,8 @@
             this.btnNew,
             this.btnOpen,
             this.btnSave,
-            this.toolStripSeparator1});
+            this.toolStripSeparator1,
+            this.btnSubmit});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(578, 39);
@@ -193,6 +195,16 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
+            // btnSubmit
+            // 
+            this.btnSubmit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnSubmit.Image = ((System.Drawing.Image)(resources.GetObject("btnSubmit.Image")));
+            this.btnSubmit.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnSubmit.Name = "btnSubmit";
+            this.btnSubmit.Size = new System.Drawing.Size(36, 36);
+            this.btnSubmit.Text = "toolStripButton1";
+            this.btnSubmit.ToolTipText = "Start Debug";
+            // 
             // DebuggerConsoleView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -202,7 +214,7 @@
             this.Controls.Add(this.txtServerURL);
             this.Controls.Add(this.urlListView);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.btnPrepare);
+            this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.txtPageUrl);
             this.Name = "DebuggerConsoleView";
             this.Size = new System.Drawing.Size(578, 298);
@@ -219,7 +231,7 @@
 
         private System.Windows.Forms.Label label1;
         public System.Windows.Forms.TextBox txtPageUrl;
-        public System.Windows.Forms.Button btnPrepare;
+        public System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ListView urlListView;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
@@ -233,5 +245,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        internal System.Windows.Forms.ToolStripButton btnSubmit;
     }
 }

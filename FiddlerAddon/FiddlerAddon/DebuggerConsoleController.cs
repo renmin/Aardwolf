@@ -46,11 +46,17 @@ namespace AlloyTeam.MobileWeb
 		{
 			LoadConfig();
 			RefreshServerCgi();
-			this.View.btnPrepare.Click += btnPrepare_Click;
+			this.View.btnAdd.Click += btnAdd_Click;
+            this.View.btnSubmit.Click+=btnSubmit_Click;
 			this.View.txtServerURL.Text = serverURL;
 
 			this.CurrentProject = new DebugProjectModule();
 		}
+
+        private void btnSubmit_Click(object sender, EventArgs e)
+        {
+            this.SubmitFileList();
+        }
 
 		private void RefreshServerCgi()
 		{
@@ -107,10 +113,80 @@ namespace AlloyTeam.MobileWeb
  
 		#endregion        
 		
-		void btnPrepare_Click(object sender, EventArgs e)
+		void btnAdd_Click(object sender, EventArgs e)
 		{
-			this.AddHTMLUrlToCurrentProject(this.View.txtPageUrl.Text);
+            this.AddFile(this.View.txtPageUrl.Text);
 		}
+
+        void AddFile(string url)
+        {
+            try
+            {
+                WebClient wc = new WebClient();
+                string content = wc.DownloadString(url);
+                string contentType = wc.ResponseHeaders[HttpResponseHeader.ContentType].ToLower();
+            
+                if (contentType.Contains("html"))
+                {
+                    JObject json = new JObject();
+                    json["url"] = url;
+                    json["html"] = content;
+
+                    this.AddHTMLUrlToCurrentProject(new JObject[]{json});
+                }
+                else if(contentType.Contains("javascript"))
+                {
+                    this.AddjsUrlToCurrentProject(new string[]{url});
+                }
+                this.View.ShowProjectFiles(this.CurrentProject);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        public void AddHTMLUrlToCurrentProject(JObject[] dataArr)
+        {
+            var count = 0;
+            foreach (var json in dataArr)
+            {
+                try
+                {
+                    var htmlURL = json["url"].Value<string>();
+                    string result = this.PostJSONToServer(json, htmlRewriteCgi);
+                    JObject jsResult = JsonConvert.DeserializeObject(result) as JObject;
+                    if (jsResult["error"] == null)
+                    {
+                        CurrentProject.HTMLPageURLs.Add(htmlURL);
+                        JArray linkScripts = jsResult["linkScripts"] as JArray;
+                        if (linkScripts != null)
+                        {
+                            foreach (var js in linkScripts)
+                            {
+                                CurrentProject.JSFileURLs.Add(js.Value<string>());
+                            }
+                        }
+                        this.CurrentProject.JSFilename = jsResult["jsFilename"].Value<string>().Replace(__SERVER_URL__, this.serverURL);
+                        count++;
+                    }
+                    else
+                    {
+                        MessageBox.Show(jsResult["error"].Value<string>());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("[ERROR] in AddHTMLUrlToCurrentProject, Message:" + ex.Message);
+                }
+            }
+            if (count > 0)
+            {
+                this.View.ShowProjectFiles(this.CurrentProject);
+            }
+
+        }
+
 		public void AddHTMLUrlToCurrentProject(string htmlURL)
 		{
 			JObject json = new JObject();
@@ -137,6 +213,7 @@ namespace AlloyTeam.MobileWeb
 		}
         public void AddjsUrlToCurrentProject(string[] jsurl)
         {
+            var count = 0;
             foreach (var item in jsurl)
             {
                 try
@@ -148,15 +225,18 @@ namespace AlloyTeam.MobileWeb
                         url = url.Substring(0, url.IndexOf(uri.Query));
                     }
                     this.CurrentProject.JSFileURLs.Add(url);
-
+                    count++;
                 }
                 catch (Exception ex)
                 {
                     
                     Debug.WriteLine("[ERROR] in AddjsUrlToCurrentProject, Message:"+ ex.Message);
                 }
-                this.View.ShowProjectFiles(this.CurrentProject);
 
+            }
+            if (count > 0)
+            {
+                this.View.ShowProjectFiles(this.CurrentProject);
             }
         }
 

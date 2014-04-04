@@ -191,8 +191,14 @@ function AardwolfServer(req, res) {
     }
 
     function ok200(data) {
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(data || {}));
+        try{
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(data || {}));
+        }
+        catch(ex){
+            console.log('ERROR in ok200. Message:'+ex.message);
+        }
+
     }
     function ok200html(text) {
         res.writeHead(200, { 'Content-Type': 'text/html' });
